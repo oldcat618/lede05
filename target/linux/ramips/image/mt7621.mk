@@ -1984,3 +1984,11 @@ define Device/zte_e8820s
 	kmod-usb-ledtrig-usbport luci-app-mtwifi -wpad-openssl
 endef
 TARGET_DEVICES += zte_e8820s
+
+define Device/iyunlink_m21axs
+  IMAGE_SIZE := 32448k
+  DEVICE_VENDOR := IYUNLINK
+  DEVICE_MODEL := M21AXS
+  DEVICE_PACKAGES := uboot-envtools kmod-usb3
+endef
+TARGET_DEVICES += iyunlink_m21axs

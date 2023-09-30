@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+#include "mt7621_iyunlink_m21series.dtsi"
+
+/ {
+	compatible = "iyunlink,m21axs", "mediatek,mt7621-soc";
+	model = "M21AXS";
+
+};
+
+
+&i2c {
+	status = "okay";
+	rtc@51 {
+		compatible = "nxp,pcf8563";
+		reg = <0x51>;
+	};
+};

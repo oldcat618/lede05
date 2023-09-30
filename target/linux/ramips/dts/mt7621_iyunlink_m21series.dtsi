@@ -1,0 +1,158 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+#include "mt7621.dtsi"
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+/ {
+	compatible = "mediatek,mt7621-soc";
+
+	aliases {
+		led-boot = &net_status;
+		led-failsafe = &net_status;
+		led-running = &net_status;
+		led-upgrade = &net_status;
+		label-mac-device = &wifi0;
+	};
+
+	chosen {
+		bootargs = "console=ttyS0,115200";
+	};
+
+	keys {
+		compatible = "gpio-keys";
+
+		reset {
+			label = "reset";
+			gpios = <&gpio 18 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_RESTART>;
+		};
+
+		sim_det {
+			label = "BTN_0";
+			gpios = <&gpio 14 1>; //gpio14 
+			linux,code = <0x100>;
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		net_status: net {
+			label = "led_net";
+			gpios = <&gpio 4 GPIO_ACTIVE_LOW>;
+		};
+		mod_status:mod{
+			label = "led_mod";
+			gpios = <&gpio 3 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	gpio_export {
+		compatible = "gpio-export";
+		#size-cells = <0>;
+
+		power_mod {
+			gpio-export,name = "power_mod";
+			gpio-export,output = <1>;
+			gpios = <&gpio 17 GPIO_ACTIVE_HIGH>;
+		};
+
+	};
+
+	watchdog {
+		compatible = "linux,wdt-gpio";
+		gpios = <&gpio 16 GPIO_ACTIVE_HIGH>;
+		hw_algo = "toggle";
+		hw_margin_ms = <1300>;
+		always-running;
+	};
+};
+
+&uartlite3 {
+	status = "okay";
+};
+
+&spi0 {
+	status = "okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <25000000>;
+		broken-flash-reset;
+		m25p,fast-read;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "u-boot";
+				reg = <0x0 0x30000>;
+				read-only;
+			};
+
+			partition@30000 {
+				label = "u-boot-env";
+				reg = <0x30000 0x10000>;
+				read-only;
+			};
+
+			factory: partition@40000 {
+				label = "factory";
+				reg = <0x40000 0x10000>;
+				read-only;
+			};
+
+			partition@50000 {
+				compatible = "denx,uimage";
+				label = "firmware";
+				reg = <0x50000 0x1fb0000>;
+			};
+		};
+	};
+};
+
+&gmac0 {
+	mtd-mac-address = <&factory 0xe000>;
+};
+
+&gmac1 {
+	mtd-mac-address = <&factory 0xe000>;
+	mtd-mac-address-increment = <1>;
+	status = "okay";
+};
+
+&gsw {
+	mediatek,portmap = "llllw";
+	status = "okay";
+};
+
+&hnat {
+	mtketh-wan = "eth1";
+	mtketh-ppd = "eth0";
+	mtketh-lan = "eth0";
+	mtketh-max-gmac = <2>;
+	/delete-property/ mtkdsa-wan-port;
+};
+
+&switch0 {
+	status = "disabled";
+};
+
+&pcie {
+	status = "okay";
+};
+
+&pcie2 {
+	wifi0:wifi@0,0 {
+		compatible = "mediatek,mt76";
+		reg = <0x0000 0 0 0 0>;
+		mediatek,mtd-eeprom = <&factory 0x8000>;
+	};
+};
+
+

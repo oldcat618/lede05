@@ -524,6 +524,7 @@ define KernelPackage/mt7915-firmware/install
 	$(INSTALL_DIR) $(1)/lib/firmware/mediatek
 	cp \
 		$(PKG_BUILD_DIR)/firmware/mt7915_wa.bin \
+		$(PKG_BUILD_DIR)/firmware/mt7915_eeprom_dbdc.bin \
 		$(PKG_BUILD_DIR)/firmware/mt7915_wm.bin \
 		$(PKG_BUILD_DIR)/firmware/mt7915_rom_patch.bin \
 		$(1)/lib/firmware/mediatek

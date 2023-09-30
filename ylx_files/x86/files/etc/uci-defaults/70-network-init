@@ -1,0 +1,7 @@
+# #!/bin/sh
+
+# uci add_list  network.@device[0].ports='eth1'
+# uci set network.wan.device='eth2'
+# uci set network.wan6.device='eth2'
+# uci commit 
+# /etc/init.d/network reload

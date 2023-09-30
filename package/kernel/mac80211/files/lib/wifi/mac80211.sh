@@ -161,6 +161,7 @@ detect_mac80211() {
 		get_band_defaults "$dev"
 
 		path="$(iwinfo nl80211 path "$dev")"
+        macaddr="$(cat /sys/class/ieee80211/${dev}/macaddress)"
 		if [ -n "$path" ]; then
 			dev_id="set wireless.radio${devidx}.path='$path'"
 		else
@@ -181,7 +182,7 @@ detect_mac80211() {
 			set wireless.default_radio${devidx}.device=radio${devidx}
 			set wireless.default_radio${devidx}.network=lan
 			set wireless.default_radio${devidx}.mode=ap
-			set wireless.default_radio${devidx}.ssid=OpenWrt
+			set wireless.default_radio${devidx}.ssid="YLX-$(echo $mode_band| tr "a-z" "A-Z" )-"$(echo $macaddr | tr -d : | tr "a-z" "A-Z" | cut -c 9-)
 			set wireless.default_radio${devidx}.encryption=none
 EOF
 		uci -q commit wireless
