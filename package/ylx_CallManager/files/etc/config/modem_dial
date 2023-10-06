@@ -1,0 +1,12 @@
+config global 'global'
+	option path 'null'
+	option custom '0'
+	option apn '3gnet'
+	option user 'null'
+	option passwd 'null'
+	option auth '0'
+	option ipv4 '1'
+	option ipv6 '1'
+	option pincode '0'
+
+

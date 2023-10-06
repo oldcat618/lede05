@@ -105,6 +105,13 @@ s/\(mt7915_wa.bin \\\n\)/&\t\t$(PKG_BUILD_DIR)\/firmware\/mt7915_eeprom_dbdc.bin
        ucidef_add_switch "switch0" \\\
 			"0:lan" "1:lan" "2:lan" "3:wan" "4:wan" "6u@eth0" "5u@eth1"\
         ;;' ./target/linux/ramips/mt7621/base-files/etc/board.d/02_network
+    #LED
+    sed -i '/iyunlink,m21axs)/,/;;/d' ./target/linux/ramips/mt7621/base-files/etc/board.d/01_leds
+    sed -i '/esac/ i\
+iyunlink,m21axs)\
+    ucidef_set_led_netdev "wan" "Wan act" "led_net" "eth1" "tx rx" \
+    ucidef_set_led_netdev "modem" "Modem act" "led_mod" "usb0" "tx rx" \
+    ;;' target/linux/ramips/mt7621/base-files/etc/board.d/01_leds
 
 
 }
@@ -172,7 +179,7 @@ build_target_m21axs() {
     mkdir -p firm/mt7621/m21axs
     
     rm -rf ./files
-    cp ylx_files/mt7621/m21axs/m21axs.opwrt.config .config
+    cp ylx_files/mt7621/m21axs/m21axs_op.config .config
 
     sed -i 's/CONFIG_VERSION_CODE="[^"]*"/CONFIG_VERSION_CODE="'$buildtime'"/' .config
     sed -i 's/CONFIG_VERSION_NUMBER="[^"]*"/CONFIG_VERSION_NUMBER="M21AXS"/' .config

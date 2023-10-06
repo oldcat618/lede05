@@ -1,0 +1,8 @@
+#!/bin/sh
+
+uci set turboacc.config.fullcone_nat='0'
+uci commit turboacc
+
+/etc/init.d/ restart
+
+exit 0

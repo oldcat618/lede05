@@ -6,6 +6,20 @@
 	compatible = "iyunlink,m21axs", "mediatek,mt7621-soc";
 	model = "M21AXS";
 
+	leds {
+		compatible = "gpio-leds";
+
+		net_status: net {
+			label = "led_net";
+			gpios = <&gpio 0 GPIO_ACTIVE_LOW>;
+		};
+		mod_status:mod{
+			label = "led_mod";
+			gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
+		};
+	};
+	
+
 };
 
 
