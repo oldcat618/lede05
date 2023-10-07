@@ -11,7 +11,7 @@ define Package/ylx_CallManager
   TITLE:=ylx_CallManager
   DEPENDS:=+kmod-qmi_wwan_q +kmod-qmi_wwan_f +kmod-qmi_wwan_m \
 			+quectel-CM-5G +Meig-CM +fibocom-dial \
-			+jq +libuci +cJSON +libfros_common
+			+jq +bash +libuci +cJSON +libfros_common 
 endef
 
 define Build/Prepare
@@ -35,8 +35,11 @@ define Package/ylx_CallManager/install
 	$(INSTALL_DIR) $(1)/sbin
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/usb
 	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/etc/uci-defaults/ylx_CallManagerDefaults $(1)/etc/uci-defaults/z-ylx_CallManagerDefaults
 	$(INSTALL_BIN) ./files/etc/init.d/ylx_CallManager.sh		$(1)/etc/init.d/ylx_CallManager
 	$(INSTALL_BIN) ./files/sbin/ylx_CallManager_ColdPlug.sh		$(1)/sbin/ylx_CallManager_ColdPlug.sh
+	$(INSTALL_BIN) ./files/sbin/ylx_ModemState_Detect.sh		$(1)/sbin/ylx_ModemState_Detect.sh
 	$(INSTALL_CONF)	./files/etc/config/modem_match.json			$(1)/etc/config/modem_match.json
 	$(INSTALL_CONF)	./files/etc/config/modem_dial				$(1)/etc/config/modem_dial
 	$(INSTALL_BIN) ./files/etc/hotplug.d/usb/ylx_CallManager_HotPlug.sh		$(1)/etc/hotplug.d/usb/ylx_CallManager_HotPlug.sh	

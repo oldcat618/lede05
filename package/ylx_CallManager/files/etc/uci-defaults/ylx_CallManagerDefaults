@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "*/1 * * * * /sbin/ylx_ModemState_Detect.sh" | crontab -
+
+exit 0
