@@ -60,7 +60,7 @@ dev_get_netinfo()
                 ;;
                 AT+SGCELLINFOEX)
                     netType=$(echo "$reply" | awk -F'[:,]' '/\+SGCELLINFOEX/{print $3}')
-                    band=$(echo "$reply" | awk -F'[:,]' '/\+SGCELLINFOEX/{print $5}')
+                    band=$(echo "$reply" | awk -F'[:,]' '/\+SGCELLINFOEX/{print $9}')
                 ;;
             esac
             break

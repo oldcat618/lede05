@@ -40,6 +40,7 @@ define Package/ylx_CallManager/install
 	$(INSTALL_BIN) ./files/etc/init.d/ylx_CallManager.sh		$(1)/etc/init.d/ylx_CallManager
 	$(INSTALL_BIN) ./files/sbin/ylx_CallManager_ColdPlug.sh		$(1)/sbin/ylx_CallManager_ColdPlug.sh
 	$(INSTALL_BIN) ./files/sbin/ylx_ModemState_Detect.sh		$(1)/sbin/ylx_ModemState_Detect.sh
+	$(INSTALL_BIN) ./files/sbin/ylx_ModenNetwork_Update.sh		$(1)/sbin/ylx_ModenNetwork_Update.sh
 	$(INSTALL_CONF)	./files/etc/config/modem_match.json			$(1)/etc/config/modem_match.json
 	$(INSTALL_CONF)	./files/etc/config/modem_dial				$(1)/etc/config/modem_dial
 	$(INSTALL_BIN) ./files/etc/hotplug.d/usb/ylx_CallManager_HotPlug.sh		$(1)/etc/hotplug.d/usb/ylx_CallManager_HotPlug.sh	

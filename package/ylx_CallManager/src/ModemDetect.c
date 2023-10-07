@@ -23,7 +23,7 @@ void *hotplugEventDetect(void *arg)
     while (1) {
         ssize_t bytesRead = read(fd, result, sizeof(result));
         if (bytesRead == 0) {
-            usleep(10000);
+            // usleep(10000);
             continue;
         }
         
@@ -264,6 +264,9 @@ int update_modem_json(const char *raw)
     cJSON_Delete(root);
     free(fileContent);
     free(updatedJsonStr);
+
+    sleep(1);
+    system(NETWORKUPDATE_SCRIPT);
 
     return 0;
 }

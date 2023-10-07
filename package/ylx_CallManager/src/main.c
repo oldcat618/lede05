@@ -18,19 +18,19 @@ int main() {
     coldplugEventDetect();
     sleep(1);
 
-    pthread_t hotplug_idt;
-    // pthread_attr_t attr;
-    // pthread_attr_init(&attr);
-    // pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+    // pthread_t hotplug_idt;
+    // // pthread_attr_t attr;
+    // // pthread_attr_init(&attr);
+    // // pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
-    if (pthread_create(&hotplug_idt, NULL, hotplugEventDetect, NULL) != 0) {
-        perror("pthread create");
-        exit(EXIT_FAILURE);
-    }
+    // if (pthread_create(&hotplug_idt, NULL, hotplugEventDetect, NULL) != 0) {
+    //     perror("pthread create");
+    //     exit(EXIT_FAILURE);
+    // }
 
     
-    // pthread_attr_destroy(&attr);
-    pthread_join(hotplug_idt, NULL);
+    // // pthread_attr_destroy(&attr);
+    // pthread_join(hotplug_idt, NULL);
 
     return 0;
 }

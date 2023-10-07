@@ -2,6 +2,7 @@
 
 ipc_doc=/tmp/modem-ipc
 lock_doc=/tmp/modem-lock
+modemjson="/tmp/modem.json"
 
 if [ ! -p "$ipc_doc" ]; then
     mkfifo $ipc_doc
@@ -33,6 +34,44 @@ update_dial_conf()
 
         uci commit modem_dial
     fi
+}
+
+
+update_network_firewall() 
+{
+    local num=0
+
+    uci show network | grep 'modem' | cut -d'.' -f2 | sort -u | grep -v '=' | while read -r entry; do uci delete network."$entry"; done
+
+    jq -r '.modem[] | select(.InterFace and .Driver) | .InterFace + " " + .Driver' "$modemjson" | while read -r entry; do
+
+        interface=$(echo "$entry" | awk '{print $1}')
+        driver=$(echo "$entry" | awk '{print $2}')
+        num=$((num + 1))
+
+        case "$driver" in
+            qmi_wwan*)
+                interface=${interface}_1
+            ;;
+        esac
+
+        uci_command="uci set network.modem_${num}=interface"
+        uci_command+="\nuci set network.modem_${num}.proto='dhcp'"
+        uci_command+="\nuci set network.modem_${num}.ifname='${interface}'"
+        uci_command+="\nuci commit network"
+
+        echo -e "$uci_command" | sh
+
+    done
+
+    fw_list=$(uci get firewall.@zone[1].network)
+    fw_list=$(echo $fw_list | sed 's/modem_[0-9]*//g' | tr -s ' ')
+    fw_list+=$(uci show network | grep 'modem' | cut -d'.' -f2 | sort -u | grep -v '=' | tr  '\n' ' ')
+    uci set firewall.@zone[1].network="$fw_list"
+    uci commit firewall
+
+    /etc/init.d/network reload
+    /etc/init.d/firewall reload
 }
 
 update_modem_leds()
