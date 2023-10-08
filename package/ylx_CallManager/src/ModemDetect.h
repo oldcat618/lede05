@@ -30,6 +30,7 @@ enum AUTH_TYPE {
 typedef enum {
     VENDOR_QUECTEL =   0x2c7c,
     VENDOR_MEIG    =   0x2dee,
+    VENDOR_MEIG_2  =   0x05c6,
     VENDOR_FIBOCOM =   0x2cb7,
 }VENDOR_TYPE_t;
 

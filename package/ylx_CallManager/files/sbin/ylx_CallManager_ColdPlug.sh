@@ -88,6 +88,7 @@ update_modem_leds()
     /etc/init.d/leds reload
 }
 
+rm -rf $modemjson
 for ifc in $(ls /sys/class/net/ | grep -e wwan -e usb -e eth); do
     driver=$(grep DRIVER /sys/class/net/$ifc/device/uevent | cut -d= -f2)
 

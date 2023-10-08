@@ -7,8 +7,8 @@ diff -ruN linux-5.4.255-org/drivers/usb/serial/option.c linux-5.4.255/drivers/us
  
 +
 +/*add for meig modem supported {*/
-+// #define MEIG_QCM_VENDOR_ID                      0x05C6
-+// #define MEIG_QCM_PRODUCT_SLM750_SRM815_SLM868   0xF601
++#define MEIG_QCM_VENDOR_ID                      0x05C6
++#define MEIG_QCM_PRODUCT_SLM750_SRM815_SLM868   0xF601
 +
 +#define MEIG_VENDOR_ID                          0x2DEE
 +#define MEIG_PRODUCT_SLM790               		0x4D20
@@ -40,7 +40,7 @@ diff -ruN linux-5.4.255-org/drivers/usb/serial/option.c linux-5.4.255/drivers/us
 +
 +	/*add for meig modem supported {*/
 +
-+	// { USB_DEVICE(MEIG_QCM_VENDOR_ID,  MEIG_QCM_PRODUCT_SLM750_SRM815_SLM868),.driver_info = RSVD(4) | RSVD(5)| RSVD(6) | RSVD(7)|RSVD(8)},
++	{ USB_DEVICE(MEIG_QCM_VENDOR_ID,  MEIG_QCM_PRODUCT_SLM750_SRM815_SLM868),.driver_info = RSVD(4) | RSVD(5)| RSVD(6) | RSVD(7)|RSVD(8)},
 +	{ USB_DEVICE(MEIG_VENDOR_ID,  MEIG_PRODUCT_SLM790),.driver_info = RSVD(0) | RSVD(5)| RSVD(6) | RSVD(7) },
 +	{ USB_DEVICE(MEIG_VENDOR_ID,  MEIG_QCM_PRODUCT_NDIS), .driver_info = RSVD(4) | RSVD(5) },
 +	{ USB_DEVICE(MEIG_VENDOR_ID,  MEIG_QCM_PRODUCT_ECM),.driver_info = RSVD(4) | RSVD(5) },

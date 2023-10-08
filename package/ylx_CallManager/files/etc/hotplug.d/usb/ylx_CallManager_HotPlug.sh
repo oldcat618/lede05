@@ -88,20 +88,31 @@ if [[ "$DEVICENAME" != *":"* ]]; then
                         if [[ -n "$ifc" && -n "$driver" ]]; then
                                 base=/sys$DEVPATH
                                 msg="insert $vid $pid $ifc $atDev $driver $base"
+                                echo "$msg" > /dev/console
+                                sync
                                 # exec 200<>$lock_doc
                                 # flock -n 200
-                                update_dial_conf $base
-                                update_modem_leds $ifc
-                                echo "$msg" > $ipc_doc
+                                # update_dial_conf $base
+                                # update_modem_leds $ifc
+                                # echo "$msg" > $ipc_doc
                                 # flock -u 200
                                 # exec 200>&-
+                                /usr/bin/ylx_CallManager
                         fi
                 ;;
                 "remove")
                         msg="remove $vid $pid /sys$DEVPATH"
+                        echo "$msg" > /dev/console
+                        sync
+                        
+                        path="/sys$DEVPATH"
+                        
+                        modified_json=$(jq 'del(.modem[] | select(.PathNode == "'$path'"))' "$modemjson")
+                        echo "$modified_json" > "$modemjson"
+
                         # exec 200<>$lock_doc
                         # flock -n 200
-                        echo "$msg" > $ipc_doc
+                        # echo "$msg" > $ipc_doc
                         # flock -u 200
                         # exec 200>&-
                 ;;

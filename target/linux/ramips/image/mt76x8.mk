@@ -861,3 +861,11 @@ define Device/zyxel_keenetic-extra-ii
 	check-size | zyimage -d 6162 -v "ZyXEL Keenetic Extra II"
 endef
 TARGET_DEVICES += zyxel_keenetic-extra-ii
+
+define Device/iyunlink_m28s
+  IMAGE_SIZE := 16064k
+  DEVICE_VENDOR := IYUNLINK
+  DEVICE_MODEL := M28S
+  DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci
+endef
+TARGET_DEVICES += iyunlink_m28s

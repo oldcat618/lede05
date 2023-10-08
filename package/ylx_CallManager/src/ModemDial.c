@@ -43,6 +43,7 @@ void *queueEventDetect(void *arg) {
             if (dat) {
                 if (!strstr(dat->dialcmd, DIALTOOL_ATCMD)) {
                     system(dat->dialcmd);
+                    break;
                 }
             } 
         }

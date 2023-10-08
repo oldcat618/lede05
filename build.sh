@@ -192,6 +192,23 @@ build_target_m21axs() {
 
 }
 
+build_target_m28s() {
+    mkdir -p firm/mt7628/m28s
+    
+    rm -rf ./files
+    cp ylx_files/mt7628/m28s/m28s_op.config .config
+
+    sed -i 's/CONFIG_VERSION_CODE="[^"]*"/CONFIG_VERSION_CODE="'$buildtime'"/' .config
+    sed -i 's/CONFIG_VERSION_NUMBER="[^"]*"/CONFIG_VERSION_NUMBER="M28S"/' .config
+
+    cp ylx_files/mt7628/m28s/files . -rf
+    make package/base-files/clean V=s
+
+    make V=s $2
+    cp bin/targets/ramips/mt76x8/iyunlink-ramips-mt76x8-iyunlink_m28s-squashfs-sysupgrade.bin firm/mt7628/m28s/M28S-$buildtime.bin
+
+}
+
 declare -A option_to_build_target
 # [option]="function:information"
 option_to_build_target=(
@@ -199,6 +216,7 @@ option_to_build_target=(
     ["env"]="env_init:Initialize the compilation environment."
     ["x86"]="build_target_x86:Building target architecture for x86."
     ["m21axs"]="build_target_m21axs:Building target m21axs."
+    ["m28s"]="build_target_m28s:Building target m28s."
 
 )
 

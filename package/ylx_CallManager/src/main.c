@@ -14,7 +14,7 @@
 
 int main() {
 
-    init_dial_config();
+    // init_dial_config();
     coldplugEventDetect();
     sleep(1);
 

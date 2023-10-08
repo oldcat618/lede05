@@ -28,7 +28,7 @@ void *hotplugEventDetect(void *arg)
         }
         
         printf("pipe: %s\n", result);
-        sleep(6); //wait for module init
+        sleep(10); //wait for module init
         update_modem_json(result);
     }
     close(fd);
@@ -169,6 +169,7 @@ int update_modem_json(const char *raw)
                 sprintf(tmp, "%s", DIALTOOL_QUECTEL);
             break;
             case VENDOR_MEIG:
+            case VENDOR_MEIG_2:
                 sprintf(tmp, "%s", DIALTOOL_MEIG);
             break;
             case VENDOR_FIBOCOM:
@@ -220,15 +221,18 @@ int update_modem_json(const char *raw)
 
         
         if(vendor_is_compatible(strtol(idVendor, NULL, 16))){
-            dial_info_t dial_info = {
-                .dialcmd = strdup(dialcmd),
-                .atDev = strdup(atDev),
-                .path = strdup(pathnode),
-                .idVendor = strtol(idVendor, NULL, 16),
-                .idProduct = strtol(idProduct, NULL, 16)
-            };
+            // dial_info_t dial_info = {
+            //     .dialcmd = strdup(dialcmd),
+            //     .atDev = strdup(atDev),
+            //     .path = strdup(pathnode),
+            //     .idVendor = strtol(idVendor, NULL, 16),
+            //     .idProduct = strtol(idProduct, NULL, 16)
+            // };
             
-            update_dial_config(&dial_info);
+            // update_dial_config(&dial_info);
+            printf("start dial\n");
+            sleep(5);
+            system(dialcmd);
         }
 
     }else if(strncmp(raw, "remove", strlen("remove")) == 0){
@@ -265,7 +269,7 @@ int update_modem_json(const char *raw)
     free(fileContent);
     free(updatedJsonStr);
 
-    sleep(1);
+    sleep(2);
     system(NETWORKUPDATE_SCRIPT);
 
     return 0;
@@ -345,6 +349,7 @@ static int vendor_is_compatible(int vendor)
 {
     return (vendor == VENDOR_QUECTEL) 
         || (vendor == VENDOR_MEIG)
+        || (vendor == VENDOR_MEIG_2)
         || (vendor == VENDOR_FIBOCOM)
         ;
 }
