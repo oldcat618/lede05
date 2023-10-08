@@ -209,6 +209,23 @@ build_target_m28s() {
 
 }
 
+build_target_q31() {
+    mkdir -p firm/qca9531/q31
+    
+    rm -rf ./files
+    cp ylx_files/qca9531/q31/q31_op.config .config
+
+    sed -i 's/CONFIG_VERSION_CODE="[^"]*"/CONFIG_VERSION_CODE="'$buildtime'"/' .config
+    sed -i 's/CONFIG_VERSION_NUMBER="[^"]*"/CONFIG_VERSION_NUMBER="Q31"/' .config
+
+    cp ylx_files/qca9531/q31/files . -rf
+    make package/base-files/clean V=s
+
+    make V=s $2
+    cp bin/targets/ath79/generic/iyunlink-ath79-generic-iyunlink_q31-squashfs-sysupgrade.bin firm/qca9531/q31/Q31-$buildtime.bin
+
+}
+
 declare -A option_to_build_target
 # [option]="function:information"
 option_to_build_target=(
@@ -217,6 +234,7 @@ option_to_build_target=(
     ["x86"]="build_target_x86:Building target architecture for x86."
     ["m21axs"]="build_target_m21axs:Building target m21axs."
     ["m28s"]="build_target_m28s:Building target m28s."
+    ["q31"]="build_target_q31:Building target q31."
 
 )
 

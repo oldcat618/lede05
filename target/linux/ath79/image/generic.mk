@@ -2574,3 +2574,13 @@ define Device/zyxel_nbg6616
   SUPPORTED_DEVICES += nbg6616
 endef
 TARGET_DEVICES += zyxel_nbg6616
+
+define Device/iyunlink_q31
+  SOC := qca9531
+  DEVICE_VENDOR := IYUNLINK
+  DEVICE_MODEL := Q31
+  DEVICE_PACKAGES := kmod-usb2 kmod-usb3 kmod-ath9k
+  IMAGE_SIZE := 16000k
+  SUPPORTED_DEVICES += q31
+endef
+TARGET_DEVICES += iyunlink_q31
