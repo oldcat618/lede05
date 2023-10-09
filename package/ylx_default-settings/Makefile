@@ -25,7 +25,7 @@ endef
 
 define Package/ylx-default-settings/install
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/zzz-ylx-default-settings $(1)/etc/uci-defaults/99-ylx-default-settings
+	$(INSTALL_BIN) ./files/zzz-ylx-default-settings $(1)/etc/uci-defaults/zzz-ylx-default-settings
 endef
 
 $(eval $(call BuildPackage,ylx-default-settings))
