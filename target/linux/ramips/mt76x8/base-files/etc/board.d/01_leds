@@ -157,6 +157,10 @@ zyxel,keenetic-extra-ii)
 	ucidef_set_led_netdev "wifi_led" "wifi" "green:wifi" "wlan0"
 	ucidef_set_led_switch "internet" "internet" "green:internet" "switch0" "0x01"
 	;;
+iyunlink,m28s)
+    ucidef_set_led_netdev "wan" "Wan act" "led_net" "eth1" "tx rx" 
+    ucidef_set_led_netdev "modem" "Modem act" "led_mod" "usb0" "tx rx" 
+    ;;
 esac
 
 board_config_flush

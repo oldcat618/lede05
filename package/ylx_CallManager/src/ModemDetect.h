@@ -35,7 +35,7 @@ typedef enum {
 }VENDOR_TYPE_t;
 
 
-#define NETWORKUPDATE_SCRIPT "/sbin/ylx_ModenNetwork_Update.sh 2>/dev/null"
+#define NETWORKUPDATE_SCRIPT "/sbin/ylx_ModemNetwork_Update.sh 2>/dev/null"
 #define COLDPLUG_SCRIPT "/sbin/ylx_CallManager_ColdPlug.sh 2>/dev/null"
 #define HOTPLUG_PIPE_PATH "/tmp/modem-ipc"
 // #define HOTPLUG_PIPE_LOCK "/tmp/modem-lock"
