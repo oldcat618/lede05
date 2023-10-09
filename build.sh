@@ -192,6 +192,23 @@ build_target_m21axs() {
 
 }
 
+build_target_m21l2() {
+    mkdir -p firm/mt7621/m21l2
+    
+    rm -rf ./files
+    cp ylx_files/mt7621/m21l2/m21l2_op.config .config
+
+    sed -i 's/CONFIG_VERSION_CODE="[^"]*"/CONFIG_VERSION_CODE="'$buildtime'"/' .config
+    sed -i 's/CONFIG_VERSION_NUMBER="[^"]*"/CONFIG_VERSION_NUMBER="M21L2"/' .config
+
+    cp ylx_files/mt7621/m21l2/files . -rf
+    make package/base-files/clean V=s
+
+    make V=s $2
+    cp bin/targets/ramips/mt7621/iyunlink-ramips-mt7621-iyunlink_m21l2-squashfs-sysupgrade.bin firm/mt7621/m21l2/M21L2-$buildtime.bin
+
+}
+
 build_target_m28s() {
     mkdir -p firm/mt7628/m28s
     
@@ -233,6 +250,7 @@ option_to_build_target=(
     ["env"]="env_init:Initialize the compilation environment."
     ["x86"]="build_target_x86:Building target architecture for x86."
     ["m21axs"]="build_target_m21axs:Building target m21axs."
+    ["m21l2"]="build_target_m21l2:Building target m21l2."
     ["m28s"]="build_target_m28s:Building target m28s."
     ["q31"]="build_target_q31:Building target q31."
 

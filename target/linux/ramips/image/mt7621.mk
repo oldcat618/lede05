@@ -1992,3 +1992,11 @@ define Device/iyunlink_m21axs
   DEVICE_PACKAGES := uboot-envtools kmod-usb3
 endef
 TARGET_DEVICES += iyunlink_m21axs
+
+define Device/iyunlink_m21l2
+  IMAGE_SIZE := 16064k
+  DEVICE_VENDOR := IYUNLINK
+  DEVICE_MODEL := M21L2
+  DEVICE_PACKAGES := uboot-envtools kmod-usb3
+endef
+TARGET_DEVICES += iyunlink_m21l2

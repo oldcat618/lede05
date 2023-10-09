@@ -132,7 +132,7 @@ xiaomi,redmi-router-ac2100)
 youhua,wr1200js)
 	ucidef_set_led_netdev "internet" "INTERNET" "green:wan" "wan"
 	;;
-iyunlink,m21axs)
+iyunlink,m21*)
     ucidef_set_led_netdev "wan" "Wan act" "led_net" "eth1" "tx rx" 
     ucidef_set_led_netdev "modem" "Modem act" "led_mod" "usb0" "tx rx" 
     ;;
