@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 static int vendor_is_compatible(int vendor);
+static void atCmdDial(int idVendor, int idProduct,const char *atDev, int ipv4, int ipv6, int custom, const char *apn, const char *user, const char *passwd, int auth);
 
 void *hotplugEventDetect(void *arg)
 {
@@ -171,12 +172,14 @@ int update_modem_json(const char *raw)
             case VENDOR_MEIG:
             case VENDOR_MEIG_2:
                 sprintf(tmp, "%s", DIALTOOL_MEIG);
+                if(strtol(idProduct, NULL, 16)==0x4d58||strtol(idProduct, NULL, 16)==0x4d52)
+                    sprintf(tmp, "%s", DIALTOOL_AT);
             break;
             case VENDOR_FIBOCOM:
                 sprintf(tmp, "%s", DIALTOOL_FIBOCOM);
             break;
             default:
-                sprintf(tmp, "%s", DIALTOOL_QUECTEL);
+                sprintf(tmp, "%s", DIALTOOL_AT);
             break;
         }
         strcat(dialcmd, tmp);
@@ -220,7 +223,7 @@ int update_modem_json(const char *raw)
         cJSON_AddItemToArray(modemArray, newModem);
 
         
-        if(vendor_is_compatible(strtol(idVendor, NULL, 16))){
+        // if(vendor_is_compatible(strtol(idVendor, NULL, 16))){
             // dial_info_t dial_info = {
             //     .dialcmd = strdup(dialcmd),
             //     .atDev = strdup(atDev),
@@ -230,10 +233,17 @@ int update_modem_json(const char *raw)
             // };
             
             // update_dial_config(&dial_info);
-            printf("start dial\n");
             sleep(5);
-            system(dialcmd);
-        }
+            if(strstr(dialcmd, DIALTOOL_AT)){
+                printf("start atcmd dial\n");
+                atCmdDial(strtol(idVendor, NULL, 16), strtol(idProduct, NULL, 16), atDev, dial_conf.ipv4, dial_conf.ipv6, dial_conf.custom, dial_conf.apn, dial_conf.user, dial_conf.passwd, dial_conf.auth);
+            }else {
+                printf("start cm-tool dial\n");
+                system(dialcmd);
+            }
+
+            
+        // }
 
     }else if(strncmp(raw, "remove", strlen("remove")) == 0){
         int result = sscanf(raw,"%ms %ms %ms %ms",&action, &idVendor, &idProduct, &pathnode);
@@ -314,6 +324,124 @@ int load_modem_dial_conf(const char *path, dial_conf_t *conf)
     uci_free_context(ctx);
 
     return 0;
+}
+
+static void atCmdDial(int idVendor, int idProduct,const char *atDev, int ipv4, int ipv6, int custom, const char *apn, const char *user, const char *passwd, int auth)
+{
+    char cmd[256]={0};
+    char tmp[128]={0};
+    int pdp_cid=0;
+
+
+    /*SLM770A  SRM821*/
+    if(idVendor == 0x2dee && (idProduct==0x4d58||idProduct==0x4d52)){
+        sprintf(cmd, "%s -p /dev/%s -c %s", DIALTOOL_AT, atDev, "AT+DIALCFG= \"DIALMODE\",0"); //enable netcard mode
+        printf("run cmd: %s\n",cmd);
+        system(cmd);
+        
+        sleep(2);
+        sprintf(cmd, "%s -p /dev/%s -c %s", DIALTOOL_AT, atDev, "AT+ECMDUP=1,0"); //disable connect 
+        int ipmode = 0;
+        if(ipv4&&!ipv6) ipmode = 0;
+        if(!ipv4&&ipv6) ipmode = 1;
+        if(ipv4&&ipv6) ipmode = 2;
+
+        sprintf(cmd, "%s -p /dev/%s -c %s%d", DIALTOOL_AT, atDev, "AT+ECMDUP=1,1,",ipmode);
+        if(custom){
+            
+            if (strlen(apn)) {
+                if(!strstr(user, "null") && 
+                    !strstr(passwd, "null") && 
+                    (auth == PAP || auth == CHAP)) {
+                    sprintf(tmp, "%s,%s,%s,%d", apn, user, passwd, auth);
+                }else {
+                    sprintf(tmp, "%s", apn);
+                }
+                strcat(cmd, tmp);
+            }
+        }
+        sleep(2);
+        printf("run cmd: %s\n",cmd);
+        system(cmd);
+        
+    }else if(idVendor==0x2dee&&(idProduct==0x4d41||idProduct==0x4d42||idProduct==0x4d43)){
+        /*SLM320*/
+        sprintf(cmd, "%s -p /dev/%s -c %s", DIALTOOL_AT, atDev, "AT+CGACT=0,1");
+        printf("run cmd: %s\n",cmd);
+        system(cmd);
+        
+        sleep(2);
+        if(custom){
+            if (strlen(apn)) {
+                sprintf(cmd, "%s -p /dev/%s -c AT+CGDCONT=1,\"IP\",\"%s\"", DIALTOOL_AT, atDev, apn);
+                printf("run cmd: %s\n",cmd);
+                system(cmd);
+                
+                sleep(2);
+            }
+
+            if(!strstr(user, "null") && 
+                    !strstr(passwd, "null") && 
+                    (auth == PAP || auth == CHAP)) {
+                sprintf(cmd, "%s -p /dev/%s -c AT+CGAUTH=1,%d,\"%s\",\"%s\"", DIALTOOL_AT, atDev, auth, user, passwd);
+                printf("run cmd: %s\n",cmd);
+                system(cmd);
+                
+                sleep(2);
+            }
+        }
+        sprintf(cmd, "%s -p /dev/%s -c %s", DIALTOOL_AT, atDev, "AT+CGACT=1,1");
+        sleep(2);
+        printf("run cmd: %s\n",cmd);
+        system(cmd);
+        
+    }else if(idVendor==0x3466&&idProduct==0x3301){
+        /*MT5710*/
+        sprintf(cmd, "%s -p /dev/%s -c %s", DIALTOOL_AT, atDev, "AT^NDISDUP=1,0");
+        printf("run cmd: %s\n",cmd);
+        system(cmd);
+        
+        if(custom){
+            if (strlen(apn)) {
+                if(!strstr(user, "null") && 
+                    !strstr(passwd, "null") && 
+                    (auth == PAP || auth == CHAP)) {
+                    sprintf(cmd, "%s -p /dev/%s -c %s\"%s\",\"%s\",\"%s\",%d", DIALTOOL_AT, atDev, "AT^NDISDUP=1,1,", apn, user, passwd, auth);
+                }else {
+                    sprintf(cmd, "%s -p /dev/%s -c %s\"%s\"", DIALTOOL_AT, atDev, "AT^NDISDUP=1,1,",apn);
+                }
+            }
+        }else{
+            sprintf(cmd, "%s -p /dev/%s -c %s", DIALTOOL_AT, atDev, "AT^NDISDUP=1,1");
+        }
+        sleep(2);
+        printf("run cmd: %s\n",cmd);
+        system(cmd);
+        
+    }else if(idVendor==0x2ecc&&idProduct==0x3010){
+        /*ME909S-805P*/
+        apn="3gnet";
+
+        sprintf(cmd, "%s -p /dev/%s -c %s", DIALTOOL_AT, atDev, "AT^NDISDUP=2,0");
+        printf("run cmd: %s\n",cmd);
+        system(cmd);
+        
+        if(custom){
+            if (strlen(apn)) {
+                if(!strstr(user, "null") && 
+                    !strstr(passwd, "null") && 
+                    (auth == PAP || auth == CHAP)) {
+                    sprintf(cmd, "%s -p /dev/%s -c %s\"%s\",\"%s\",\"%s\",%d", DIALTOOL_AT, atDev, "AT^NDISDUP=2,1,", apn, user, passwd, auth);
+                }else {
+                    sprintf(cmd, "%s -p /dev/%s -c %s\"%s\"", DIALTOOL_AT, atDev, "AT^NDISDUP=2,1,",apn);
+                }
+            }
+        }
+        sleep(2);
+        printf("run cmd: %s\n",cmd);
+        system(cmd);
+        
+    }
 }
 
 

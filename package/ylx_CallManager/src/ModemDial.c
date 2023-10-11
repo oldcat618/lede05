@@ -41,7 +41,7 @@ void *queueEventDetect(void *arg) {
         if (!fros_queue_empty(queue)) {
             dat = (dial_info_t*)fros_de_queue(queue);
             if (dat) {
-                if (!strstr(dat->dialcmd, DIALTOOL_ATCMD)) {
+                if (!strstr(dat->dialcmd, DIALTOOL_AT)) {
                     system(dat->dialcmd);
                     break;
                 }

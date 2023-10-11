@@ -45,7 +45,7 @@ typedef enum {
 #define DIALTOOL_QUECTEL    "quectel-CM"
 #define DIALTOOL_MEIG       "Meig-CM"
 #define DIALTOOL_FIBOCOM    "fibocom-dial"
-#define DIALTOOL_ATCMD    "ATCMD"
+#define DIALTOOL_AT    "ylx_AT-Tool"
 
 void *hotplugEventDetect(void *arg);
 int coldplugEventDetect();

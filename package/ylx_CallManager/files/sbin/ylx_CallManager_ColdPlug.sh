@@ -1,12 +1,12 @@
 #!/bin/sh
 
-ipc_doc=/tmp/modem-ipc
-lock_doc=/tmp/modem-lock
+# ipc_doc=/tmp/modem-ipc
+# lock_doc=/tmp/modem-lock
 modemjson="/tmp/modem.json"
 
-if [ ! -p "$ipc_doc" ]; then
-    mkfifo $ipc_doc
-fi
+# if [ ! -p "$ipc_doc" ]; then
+#     mkfifo $ipc_doc
+# fi
 
 update_dial_conf() 
 {

@@ -6,7 +6,7 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=ylx-default-settings
+PKG_NAME:=ylx_default-settings
 PKG_VERSION:=1
 PKG_RELEASE:=0
 PKG_LICENSE:=GPLv3
@@ -14,7 +14,7 @@ PKG_LICENSE_FILES:=LICENSE
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/ylx-default-settings
+define Package/ylx_default-settings
   CATEGORY:=LINK4ALL
   TITLE:=ylx default settings
 endef
@@ -23,9 +23,9 @@ endef
 define Build/Compile
 endef
 
-define Package/ylx-default-settings/install
+define Package/ylx_default-settings/install
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/zzz-ylx-default-settings $(1)/etc/uci-defaults/zzz-ylx-default-settings
+	$(INSTALL_BIN) ./files/zzz-ylx_default-settings $(1)/etc/uci-defaults/zzz-ylx_default-settings
 endef
 
-$(eval $(call BuildPackage,ylx-default-settings))
+$(eval $(call BuildPackage,ylx_default-settings))

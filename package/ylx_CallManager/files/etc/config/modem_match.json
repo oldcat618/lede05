@@ -11,6 +11,14 @@
     "name": "MeiGe SRM-Series",
     "atIdx": 3
   },
+  "2dee4d58": {
+    "name": "MeiGe SLM770",
+    "atIdx": 2
+  },
+  "2dee4d52": {
+    "name": "MeiGe SRM821",
+    "atIdx": 1
+  },
   "05c6f601": {
     "name": "MeiGe SLM750",
     "atIdx": 3
@@ -82,6 +90,10 @@
   "12864e3c": {
     "name": "YuGe CLM920",
     "atIdx": 3
+  },
+  "34663301": {
+    "name": "TD Tech MT5710",
+    "atIdx": 1
   }
 }
 

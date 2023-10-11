@@ -4,29 +4,22 @@ ATtool="ylx_AT-Tool"
 json_file="/tmp/modem.json"
 updated_file="/tmp/updated_config.json"
 tmp_file="/tmp/tmp_updated_config.json"
+model=''
 
-
-dev_set_atecho()
+dev_init_atecho()
 {   
-    local CMD_SET_ATECHO="ATE"
     local dev=$1
 
-    local reply=$($ATtool -p $dev -c $CMD_SET_ATECHO)
+    local reply=$($ATtool -p $dev -c "ATE")
     if ! echo "$reply" | grep -q "OK"; then
         echo "Failed to set AT Commond ECHO on device $dev"
         exit 1
     fi
-}
 
-dev_get_version()
-{
-    local CMD_GET_VERSION="ATI"
-    local dev=$1
-
-    local reply=$($ATtool -p $dev -c $CMD_GET_VERSION)
-    if echo "$reply" | grep -q "OK"; then
-        ver=$(echo "$reply" | grep "Revision:" | awk '{print $2}')
-        echo $ver
+    local reply=$($ATtool -p $dev -c "AT+COPS=0,0")
+    if ! echo "$reply" | grep -q "OK"; then
+        echo "Failed to set AT Commond ECHO on device $dev"
+        exit 1
     fi
 }
 
@@ -34,13 +27,48 @@ dev_get_imei()
 {
     local CMD_GET_IMIE="AT+CGSN"
     local dev=$1
-
+    local imei=''
     local reply=$($ATtool -p $dev -c $CMD_GET_IMIE)
     if echo "$reply" | grep -q "OK"; then
         imei=$(echo "$reply" | grep -oE "[0-9]+" | awk 'NR==1{print}')
         echo $imei
     fi
 }
+
+
+dev_get_modeminfo()
+{
+    local CMD_GET_MODEL="ATI"
+    local dev=$1
+
+    local manufacturer=''
+    local model=''
+    local rev=''
+    local imei=''
+
+    local reply=$($ATtool -p $dev -c $CMD_GET_MODEL)
+    if echo "$reply" | grep -q "OK"; then
+        manufacturer=$(echo "$reply" | grep -oi "Manufacturer: .*" | sed 's/Manufacturer: //' | tr -d '\r')
+        model=$(echo "$reply" | grep -oi "Model: .*" | sed 's/Model: //' | tr -d '\r')
+        rev=$(echo "$reply" | grep -oi "Revision: .*" | sed 's/Revision: //' | tr -d '\r')
+        imei=$(echo "$reply" | grep -oi "IMEI: .*" | sed 's/IMEI: //' | tr -d '\r')
+
+
+        if [ -z "$manufacturer" ] || [ -z "$model" ] || [ -z "$revision" ] || [ -z "$imei" ]; then
+            if echo "$reply" | grep -qi "Quectel"; then
+                manufacturer="Quectel"
+                imei=$(dev_get_imei $dev)
+                rev=$(echo "$reply" | grep "Revision:" | awk '{print $2}')
+                model=$(echo "$reply" | grep -A 1 -i "Quectel" | tail -n 1 | sed 's/Model: //' | tr -d '\r')
+            fi
+
+        fi
+
+        echo "$manufacturer/$model/$rev/$imei"
+    fi
+}
+
+
 
 dev_get_netinfo()
 {
@@ -87,14 +115,17 @@ dev_get_rssi()
 dev_get_operatorname()
 {
     
-    local CMD_GET_OPERATORNAME=("AT^EONS=1" "AT+QSPN")
+    local CMD_GET_OPERATORNAME=("AT+COPS?" "AT^EONS=1" "AT+QSPN")
     local operatorname=''
     local dev=$1
 
     for cmd in "${CMD_GET_OPERATORNAME[@]}"; do
         local reply=$($ATtool -p $dev -c $cmd)
         if echo "$reply" | grep -q "OK"; then
-            case $cmd in 
+            case $cmd in
+                AT+COPS?)
+                    operatorname=$(echo "$reply" | grep "+COPS:" | awk -F'["]' '{print $2}' )
+                ;; 
                 AT^EONS*)
                     operatorname=$(echo "$reply" | grep "ONS:" | awk -F'["]' '{print $2}')
                 ;;
@@ -174,40 +205,51 @@ dev_get_cpin()
     esac
 }
 
+if [ ! -f $json_file ]; then
+    exit 0
+fi
 cp $json_file $updated_file
 atDev_list=$(jq -r '.modem[].atDev' $json_file)
 for dev in $atDev_list; do
-    # if [ ! -c "/dev/$dev" ]; then
-    #     # continue 2
-    # fi
+    if [ ! -c "/dev/$dev" ]; then
+        continue 2
+    fi
 
-    fix=/dev/$dev
-    dev_set_atecho $fix
-    rev=$(dev_get_version $fix)
-    imei=$(dev_get_imei $fix)
-    netinfo=$(dev_get_netinfo $fix)
-    rssi=$(dev_get_rssi $fix)
-    operatorname=$(dev_get_operatorname $fix)
-    imsi=$(dev_get_imsi $fix)
-    ccid=$(dev_get_ccid $fix)
-    cpin=$(dev_get_cpin $fix)
+    fixdev=/dev/$dev
+    dev_init_atecho $fixdev
+
+    modinfo=$(dev_get_modeminfo $fixdev)
+    manufacturer=$(echo "$modinfo" | cut -d'/' -f1)
+    model=$(echo "$modinfo" | cut -d'/' -f2)
+    rev=$(echo "$modinfo" | cut -d'/' -f3)
+    imei=$(echo "$modinfo" | cut -d'/' -f4)
+
+    netinfo=$(dev_get_netinfo $fixdev)
+    netType=$(echo "$netinfo" | cut -d'/' -f1 )
+    band=$(echo "$netinfo" | cut -d'/' -f2 )
+
+    rssi=$(dev_get_rssi $fixdev)
+    operator=$(dev_get_operatorname $fixdev)
+    imsi=$(dev_get_imsi $fixdev)
+    ccid=$(dev_get_ccid $fixdev)
+    cpin=$(dev_get_cpin $fixdev)
+
+    # echo {"Manufacturer":$manufacturer, "Model": $model, "Revision": $rev, "IMEI": $imei, "SIM": $cpin, "RSSI": $rssi, "Operator": $operator, "NetType": $netType, "Band": $band, "IMSI": $imsi, "CCID": $ccid}
 
 
-    # if [ -n "$rev" ] && [ -n "$imei" ] && [ -n "$netinfo" ] && [ -n "$rssi" ] && [ -n "$operatorname" ] && [ -n "$imsi" ] && [ -n "$ccid" ] && [ -n "$cpin" ]; then
-
-    # fi
-    
     jq --arg dev "$dev" \
+    --arg manufacturer "$manufacturer" \
+    --arg model "$model" \
     --arg rev "$rev" \
     --arg imei "$imei" \
     --arg cpin "$cpin" \
     --arg rssi "$rssi" \
-    --arg operator "$operatorname" \
-    --arg netType "$(echo "$netinfo" | cut -d'/' -f1)" \
-    --arg band "$(echo "$netinfo" | cut -d'/' -f2)" \
+    --arg operator "$operator" \
+    --arg netType "$netType" \
+    --arg band "$band" \
     --arg imsi "$imsi" \
     --arg ccid "$ccid" \
-    '.modem[] |= if .atDev == $dev then . + {"state": {"Revision": $rev, "IMEI": $imei, "SIM": $cpin, "RSSI": $rssi, "Operator": $operator, "NetType": $netType, "Band": $band, "IMSI": $imsi, "CCID": $ccid}} else . end' "$updated_file" > "$tmp_file"
+    '.modem[] |= if .atDev == $dev then . + {"state": {"Manufacturer":$manufacturer, "Model": $model, "Revision": $rev, "IMEI": $imei, "SIM": $cpin, "RSSI": $rssi, "Operator": $operator, "NetType": $netType, "Band": $band, "IMSI": $imsi, "CCID": $ccid}} else . end' "$updated_file" > "$tmp_file"
 
     mv $tmp_file $updated_file
 done
