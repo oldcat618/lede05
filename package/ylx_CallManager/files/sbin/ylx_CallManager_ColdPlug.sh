@@ -55,9 +55,9 @@ update_network_firewall()
             ;;
         esac
 
-        uci_command="uci set network.modem_${num}=interface"
-        uci_command+="\nuci set network.modem_${num}.proto='dhcp'"
-        uci_command+="\nuci set network.modem_${num}.ifname='${interface}'"
+        uci_command="uci set network.modem${num}=interface"
+        uci_command+="\nuci set network.modem${num}.proto='dhcp'"
+        uci_command+="\nuci set network.modem${num}.ifname='${interface}'"
         uci_command+="\nuci commit network"
 
         echo -e "$uci_command" | sh
@@ -70,7 +70,7 @@ update_network_firewall()
     uci set firewall.@zone[1].network="$fw_list"
     uci commit firewall
 
-    /etc/init.d/network reload
+    # /etc/init.d/network reload
     /etc/init.d/firewall reload
 }
 

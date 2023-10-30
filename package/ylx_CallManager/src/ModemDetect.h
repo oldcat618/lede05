@@ -43,7 +43,7 @@ typedef enum {
 #define MODEM_DIAL_PACKAGE_NAME "modem_dial"
 #define MODEM_SECTION_NAME      "dial"
 #define DIALTOOL_QUECTEL    "quectel-CM"
-#define DIALTOOL_MEIG       "Meig-CM"
+#define DIALTOOL_MEIG       "meig-CM"
 #define DIALTOOL_FIBOCOM    "fibocom-dial"
 #define DIALTOOL_AT    "ylx_AT-Tool"
 

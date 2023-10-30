@@ -41,4 +41,4 @@ uci set firewall.@zone[1].network="$fw_list"
 uci commit firewall
 
 /etc/init.d/firewall reload
-/etc/init.d/network reload
+# /etc/init.d/network reload
