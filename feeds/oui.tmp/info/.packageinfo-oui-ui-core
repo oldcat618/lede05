@@ -1,0 +1,44 @@
+Source-Makefile: feeds/oui/oui-ui-core/Makefile
+Build-Depends: !OUI_USE_HOST_NODE:node/host
+
+Package: oui-ui-core
+Version: git-2023.261.48615-5ccad56-1
+Depends: +libc +oui-rpc-core
+Conflicts: 
+Menu-Depends: 
+Provides: 
+Section: oui
+Category: Oui
+Repository: base
+Title: Oui ui core
+Maintainer: Jianhui Zhao <zhaojh329@gmail.com>
+Source: 
+License: MIT
+Type: ipkg
+Description: Oui ui core
+https://github.com/zhaojh329/oui
+Jianhui Zhao <zhaojh329@gmail.com>
+@@
+Config:
+  config OUI_LOGIN_VIEW
+	string "Customize the login view"
+	default "login"
+
+  config OUI_LAYOUT_VIEW
+	string "Customize the layout view"
+	default "layout"
+
+  config OUI_HOME_VIEW
+	string "Customize the home view"
+	default "home"
+
+  config OUI_USE_HOST_NODE
+	bool "Use existing nodejs installation on the host system"
+	default n
+	help
+	  This disables the build dependency on the node package from
+	  the OpenWrt packages feed, allowing for faster development
+	  builds.
+@@
+
+

@@ -1,0 +1,21 @@
+Source-Makefile: feeds/oui/applications/oui-app-stations/Makefile
+
+Package: oui-app-stations
+Submenu: Applications
+Version: git-2023.261.48615-5ccad56-1
+Depends: +libc +oui-ui-core +lua-eco-nl80211 +lua-eco-ubus
+Conflicts: 
+Menu-Depends: 
+Provides: 
+Section: oui
+Category: Oui
+Repository: base
+Title: Stations
+Maintainer: 
+Source: 
+Type: ipkg
+Description: Stations
+
+@@
+
+

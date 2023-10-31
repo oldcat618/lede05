@@ -1,0 +1,24 @@
+Source-Makefile: feeds/oui/lua-cjson-53/Makefile
+
+Package: lua-cjson-53
+Submenu: Lua
+Version: 2.1.0-1
+Depends: +libc +lua
+Conflicts: 
+Menu-Depends: 
+Provides: 
+Section: lang
+Category: Languages
+Repository: base
+Title: Lua5.3 CJSON parser
+Maintainer: 
+Source: 
+License: MIT
+LicenseFiles: LICENSE
+Type: ipkg
+Description:   Lua5.3 CJSON is a fast JSON encoding/parsing module for Lua.
+https://github.com/mpx/lua-cjson
+
+@@
+
+
