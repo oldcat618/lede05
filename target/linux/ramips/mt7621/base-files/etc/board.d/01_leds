@@ -136,6 +136,10 @@ iyunlink,m21*)
     ucidef_set_led_netdev "wan" "Wan act" "led_net" "eth1" "tx rx" 
     ucidef_set_led_netdev "modem" "Modem act" "led_mod" "usb0" "tx rx" 
     ;;
+iyunlink,m21axs)
+    ucidef_set_led_netdev "wan" "Wan act" "led_net" "eth1" "tx rx" 
+    ucidef_set_led_netdev "modem" "Modem act" "led_mod" "usb0" "tx rx" 
+    ;;
 esac
 
 board_config_flush

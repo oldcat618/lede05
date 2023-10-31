@@ -65,7 +65,8 @@ env_init() {
     # # Update custom application
     # update_custom_package $CUSTOM_PCSKGES_NAME $YLX_PCSKGES_REPO_URL
 
-
+    #Theme
+    sed -i 's/+luci-theme-bootstrap/+luci-theme-argon-mod/' ./feeds/luci/collections/luci/Makefile
     #Lan IPaddr
     sed -i "s/192\.168\.[0-9]*\.[0-9]*/$CUSTOM_LAN_IPADDRESS/g" ./package/base-files/files/bin/config_generate
     #HostName
@@ -157,7 +158,7 @@ rebuild_base_files() {
     cp ylx_files/$1/$1.opwrt.config .config
 
     sed -i 's/CONFIG_VERSION_CODE="[^"]*"/CONFIG_VERSION_CODE="'$buildtime'"/' .config
-    sed -i 's/CONFIG_VERSION_NUMBER="[^"]*"/CONFIG_VERSION_NUMBER="F16-X86"/' .config
+    sed -i 's/CONFIG_VERSION_NUMBER="[^"]*"/CONFIG_VERSION_NUMBER="X86"/' .config
 
     cp ylx_files/$1/files/ . -rf
     make package/base-files/clean V=s
