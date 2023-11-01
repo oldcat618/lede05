@@ -1,0 +1,15 @@
+applications/oui-app-acl
+applications/oui-app-backup
+applications/oui-app-demo
+applications/oui-app-dhcp-lease
+applications/oui-app-home
+applications/oui-app-layout
+applications/oui-app-login
+applications/oui-app-stations
+applications/oui-app-system
+applications/oui-app-upgrade
+applications/oui-app-user
+libuci-lua-53
+lua-cjson-53
+oui-rpc-core
+oui-ui-core
