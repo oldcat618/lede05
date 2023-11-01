@@ -114,7 +114,15 @@ iyunlink,m21axs)\
     ucidef_set_led_netdev "modem" "Modem act" "led_mod" "usb0" "tx rx" \
     ;;' target/linux/ramips/mt7621/base-files/etc/board.d/01_leds
 
+    #Packages Start#
+    #xfrpc
+    rm -rf ./feeds/packages/net/xfrpc
+    cp -r ylx_files/packages/xfrpc ./feeds/packages/net/xfrpc
 
+    #lua-eco
+    cp ylx_files/packages/lua-eco/Makefile  ./feeds/packages/lang/lua-eco/Makefile
+
+    #Packages END#
 }
 
 repo(){
