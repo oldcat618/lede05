@@ -168,8 +168,8 @@ rebuild_base_files() {
     sed -i 's/CONFIG_VERSION_CODE="[^"]*"/CONFIG_VERSION_CODE="'$buildtime'"/' .config
     sed -i 's/CONFIG_VERSION_NUMBER="[^"]*"/CONFIG_VERSION_NUMBER="X86"/' .config
 
-    cp ylx_files/$1/files/ . -rf
-    make package/base-files/clean V=s
+    # cp ylx_files/$1/files/ . -rf
+    # make package/base-files/clean V=s
 
 }
 

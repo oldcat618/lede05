@@ -72,7 +72,7 @@ endef
 # directory) to the install directory.
 define Package/Meig-CM/install
 	$(INSTALL_DIR) $(1)/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/Meig-CM $(1)/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/Meig-CM $(1)/bin/meig-CM
 endef
 
 

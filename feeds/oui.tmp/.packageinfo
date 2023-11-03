@@ -82,6 +82,27 @@ Description: DHCP lease
 @@
 
 
+Source-Makefile: feeds/oui/applications/oui-app-frp/Makefile
+
+Package: oui-app-frp
+Submenu: Applications
+Version: unknown-1
+Depends: +libc +oui-ui-core
+Conflicts: 
+Menu-Depends: 
+Provides: 
+Section: oui
+Category: Oui
+Repository: base
+Title: Frp 
+Maintainer: 
+Source: 
+Type: ipkg
+Description: Frp 
+
+@@
+
+
 Source-Makefile: feeds/oui/applications/oui-app-home/Makefile
 
 Package: oui-app-home
